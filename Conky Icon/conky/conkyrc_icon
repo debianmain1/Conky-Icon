@@ -1,0 +1,106 @@
+conky.config = {
+
+-- Conky by Dean Loros
+-- Conky settings #
+	background = false,
+	update_interval = 2,
+	double_buffer = true,
+	no_buffers = true,
+
+-- number of cpu samples to average
+-- set to 1 to disable averaging
+	cpu_avg_samples = 1,
+
+-- number of net samples to average
+-- set to 1 to disable averaging
+	net_avg_samples = 1,
+
+-- Window specifications #
+	own_window = true,
+        own_window_type = 'desktop',
+	own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+	own_window_title = '',
+	own_window_transparent=true,
+	own_window_argb_visual = true,
+	own_window_argb_value = 200,
+
+-- Minimum size of text area
+	minimum_width = 250, minimum_height = 1080,
+
+-- Alignment #
+	alignment = 'top_right',
+	gap_x = 0,
+	gap_y = 30,
+
+	border_inner_margin = 4,
+	border_outer_margin = 0,
+
+-- Graphics settings #
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = false,
+
+-- Text settings #
+	use_xft = true,
+	font = 'Technical CE:bold:size=10',
+	xftalpha = 0.5,
+
+	override_utf8_locale = true,
+
+	imlib_cache_size = 0,
+
+-- Color scheme #
+	default_color = 'white',
+        color1 = 'green',
+        color2 = 'red',
+};
+
+conky.text = [[
+${image ~/.conky/img/elegant2.png -p 0,0 250x1050}${image ~/.conky/img/logo-tux.png -p 15,15 -s 64x64}${image ~/.conky/img/down.png -p 45,955 -s 15x15}${image ~/.conky/img/up.png -p 45,1000 -s 15x15}${image ~/.conky/img/cpu_icon.png -p 15,155 -s 68x44}${image ~/.conky/img/memory.png -p 15,280 -s 68x44}${image ~/.conky/img/top_.png -p 15,345 -s 57x46}${image ~/.conky/img/top_.png -p 15,475 -s 57x46}${image ~/.conky/img/Hd.png -p 15,600 -s 60x57}${image ~/.conky/img/nvidia.png -p 15,750 -s 48x48}${image ~/.conky/img/network01.png -p 15,825 -s 55x55}
+${goto 100}${font Technical CE:bold:size=20}SYSTEM
+${font}${color1}
+${goto 30}${exec cat /etc/issue.net}
+${goto 30}${exec cat /proc/cpuinfo|grep 'model name'|sed -e 's/model name.*: //'| uniq | cut -c 1-32}
+${goto 30}Kernel:  $kernel
+${goto 30}CPU Speed: ${freq_g 4}${goto 150}GHz${voffset 10}
+${goto 95}${color}------------------------
+${goto 90}${color}LOAD${goto 180}TEMP${color1}
+${goto 30}CPU0:${goto 90}${cpu cpu1}%${goto 180}${execi 30 sensors|grep 'Core 0'| awk -F'+' '{print $2}' | awk -F'.' '{print $1}'} °C 
+${goto 30}CPU1:${goto 90}${cpu cpu2}%${goto 180}${execi 30 sensors|grep 'Core 1'| awk -F'+' '{print $2}' | awk -F'.' '{print $1}'} °C 
+${goto 30}CPU2:${goto 90}${cpu cpu3}%${goto 180}${execi 30 sensors|grep 'Core 2'| awk -F'+' '{print $2}' | awk -F'.' '{print $1}'} °C 
+${goto 30}CPU3:${goto 90}${cpu cpu4}%${goto 180}${execi 30 sensors|grep 'Core 3'| awk -F'+' '{print $2}' | awk -F'.' '{print $1}'} °C${color}${voffset 10}
+${goto 95}${color}------------------------
+${goto 90}PERCENT${goto 180}TOTAL${color1} 
+${goto 90}$memperc% ${goto 180}$memmax${color}${voffset 20}
+${goto 90}${color}${font Technical CE:bold:size=12}CPU: ----------------${color1}${font}${voffset 15}
+${goto 30}${top name 1}${goto 180}${top cpu 1}%
+${goto 30}${top name 2}${goto 180}${top cpu 2}%
+${goto 30}${top name 3}${goto 180}${top cpu 3}%
+${goto 30}${top name 4}${goto 180}${top cpu 4}%${voffset 20}
+${goto 90}${color}${font Technical CE:bold:size=12}${color}MEM: ---------------${color1}${font}${voffset 15}
+${goto 30}${top_mem name 1}${goto 180}${top mem 1}%
+${goto 30}${top_mem name 2}${goto 180}${top mem 2}%
+${goto 30}${top_mem name 3}${goto 180}${top mem 3}%
+${goto 30}${top_mem name 4}${goto 180}${top mem 4}%${color}
+${voffset 10}
+${goto 90}-------------------------
+${goto 90}FREE:${goto 180}TOTAL:${color1}
+${goto 30}Home${goto 90}${fs_free /home}${goto 180}${fs_size /home}
+${goto 30}Root${goto 90}${fs_free /}${goto 180}${fs_size /}
+${goto 30}EX2${goto 90}${fs_free /mnt/EX2}${goto 180}${fs_size /mnt/EX2}
+${goto 30}EX2home${goto 90}${fs_free /mnt/EX2home}${goto 180}${fs_size /mnt/EX2home}
+${goto 30}Storage${goto 90}${fs_free /media/Storage}${goto 180}${fs_size /media/Storage}${color}${voffset 20}
+${goto 90}-------------------------${voffset 15}
+${goto 30}${color1}GPU1:  ${execi 5 nvidia-settings -t -q [gpu:0]/GPUCoreTemp} °C${goto 160}GPU2:  ${execi 5 nvidia-settings -t -q [gpu:1]/GPUCoreTemp} °C${color}${voffset 25}
+${goto 90}-------------------------${color1}
+
+${goto 30}Wan:${goto 90}${execi 3600 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}
+${goto 30}Lan:${goto 90}${addr bond0}
+${goto 30}Inbound Ports:${goto 180}${tcp_portmon 1 32767 count}
+${goto 30}Outbound Ports:${goto 180}${tcp_portmon 32768 61000 count}
+${goto 100}${voffset 5}${downspeed bond0} ${goto 160}/  ${totaldown bond0}
+${offset 10}${downspeedgraph bond0 15,230 324D23 77B753 100 -l}
+${color2}${goto 100}${voffset 5}${upspeed bond0} ${goto 160}/  ${totalup bond0}
+${offset 10}${upspeedgraph bond0 15,230 4B1B0C FF5C2B 100 -l}
+]];
